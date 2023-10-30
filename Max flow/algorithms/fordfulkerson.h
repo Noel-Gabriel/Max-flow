@@ -19,6 +19,6 @@ namespace algorithms {
 
 }
 
-#include "fordfulkerson.tpp"
+#include "fordfulkerson.ipp"
 
 #endif

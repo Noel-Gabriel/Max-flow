@@ -99,6 +99,6 @@ namespace data_structures {
 
 }
 
-#include "graph.tpp"
+#include "graph.ipp"
 
 #endif

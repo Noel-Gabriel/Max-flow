@@ -19,6 +19,6 @@ namespace algorithms {
     flow_t edmonds_karp(data_structures::Graph<flow_t>& graph);
 }
 
-#include "edmondskarp.tpp"
+#include "edmondskarp.ipp"
 
 #endif

@@ -18,6 +18,6 @@ namespace algorithms {
     
 }
 
-#include "dinic.tpp"
+#include "dinic.ipp"
 
 #endif

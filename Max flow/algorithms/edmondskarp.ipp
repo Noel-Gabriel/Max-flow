@@ -1,7 +1,7 @@
 #ifndef EDMONDS_KARP_TPP
 #define EDMONDS_KARP_TPP
 
-#include "fordfulkerson.tpp"
+#include "fordfulkerson.ipp"
 #include "../data structures/graph.h"
 #include <queue>
 #include <map>

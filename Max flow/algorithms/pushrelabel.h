@@ -19,6 +19,6 @@ namespace algorithms {
         
 }
 
-#include "pushrelabel.tpp"
+#include "pushrelabel.ipp"
 
 #endif
