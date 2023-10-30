@@ -47,7 +47,7 @@ int main() {
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     
     std::cout << "HIPR:\n";
-    std::cout << "Max flow: " << max_flow_hipr << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms.\n";*/l
+    std::cout << "Max flow: " << max_flow_hipr << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms.\n";*/
 
     std::cout << "------------------------------\n";
     std::cout << "DFS:\n";
@@ -63,6 +63,8 @@ int main() {
     std::cout << "Max flow: " << ek.second << " in " << ek.first << " ms.\n";
     g.restore();
 
+    assert(ek.second == ff.second && "Ford-Fulkerson and Edmonds-Karp max flow value not equal");
+
     std::cout << "-----------------------------\n";
     std::cout << "DINIC:\n";
     auto dinic{benchmark(g, &algorithms::dinic)};
@@ -70,10 +72,15 @@ int main() {
     std::cout << "Max flow: " << dinic.second << " in " << dinic.first << " ms.\n";
     g.restore();
 
+    assert(ek.second == dinic.second && "FF/EK and Dinic's max flow value not equal");
+
     std::cout << "-----------------------------\n";
     std::cout << "PUSH RELABEL\n";
     auto pr{benchmark(g, &algorithms::push_relabel)};
     std::cout << "Max flow: " << pr.second << " in " << pr.first << " ms.\n";
+
+    assert(ek.second == pr.second && "FF/EK/Dinic and Push-Relabel max flow value not equal");
+
     g.restore();
     
     return 0;
