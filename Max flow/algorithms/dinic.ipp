@@ -57,7 +57,7 @@ namespace algorithms {
     flow_t dinic_dfs(auto& graph, int vertex, flow_t flow_pushed, std::vector<int>& level, std::vector<int>& edges_to_visit) {
         // reached the sink
         if(graph.m_t == vertex) { 
-            std::cout << graph.m_t << " <- ";
+            //std::cout << graph.m_t << " <- ";
             return flow_pushed; 
         }
         // only consider edges of each vertex which have not been visited by previous dfs' in the current level graph
@@ -74,7 +74,7 @@ namespace algorithms {
             if(push == 0) {
                 continue;
             }
-            std::cout << vertex << ((vertex == graph.m_s)? "": " <- ");
+            //std::cout << vertex << ((vertex == graph.m_s)? "": " <- ");
             // push through this edge
             edge.capacity -= push;
             // update reverse edge denoting total flow pushed through this edge
@@ -106,10 +106,10 @@ namespace algorithms {
         std::vector<int> edges_to_visit(graph.m_adj_list.size(), 0);
         // while s-t path exists
         while(level[graph.m_t] != -1) {
-            std::cout << "LEVEL: " << level[graph.m_t] << "\n";
+            //std::cout << "LEVEL: " << level[graph.m_t] << "\n";
             // push until a blocking flow is found
             while((flow_pushed = dinic_dfs<flow_t>(graph, graph.m_s, std::numeric_limits<flow_t>::max(), level, edges_to_visit))) {
-                std::cout << "        flow pushed: " << flow_pushed << "\n";
+                //std::cout << "        flow pushed: " << flow_pushed << "\n";
                 max_flow += flow_pushed;
             }
             // build new level graph and consider all edges again

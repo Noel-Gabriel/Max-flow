@@ -75,13 +75,13 @@ namespace algorithms {
             // update capacities
             while(v != graph.m_s) {
                 int edge = augmenting_path[v];
-                std::cout << v << " <- ";
+                //std::cout << v << " <- ";
                 graph.m_edges[edge].capacity -= flow_pushed;
                 // the reversed edge is next to the non reversed edge, can use xor to index it
                 graph.m_edges[edge^1].capacity += flow_pushed;
                 v = graph.m_edges[edge].tail;
             }
-            std::cout << "0 " << "     flow  pushed: " << flow_pushed << "\n";
+            //std::cout << "0 " << "     flow  pushed: " << flow_pushed << "\n";
             // increase total flow using the augmenting path found
             max_flow += flow_pushed;
             // clear current augmenting path for the next one

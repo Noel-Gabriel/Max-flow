@@ -3,7 +3,7 @@
 //
 // Source: https://github.com/kth-competitive-programming/kactl/blob/main/content/graph/PushRelabel.h#L15
 //
-// Used to debug my own push-relabel
+// Used to debug my own push-relabel (This is the highest label push-relabel + gap heuristic implementation)
 
 #ifndef PushRelabel_h
 #define PushRelabel_h
@@ -43,7 +43,7 @@ struct PushRelabel {
     }
     ll calc(int s, int t) {
         int v = size(g); H[s] = v; ec[t] = 1;
-       // vi co(2*v); co[0] = v-1;
+        vi co(2*v); co[0] = v-1;
         rep(i,0,v) cur[i] = g[i].data();
         for (Edge& e : g[s]) addFlow(e, e.c);
 
@@ -65,11 +65,10 @@ struct PushRelabel {
                             cur[u] = &e;
                         }
                     }
-                  /*
+                  
                     if (++co[H[u]], !--co[hi] && hi < v)
                         rep(i,0,v) if (hi < H[i] && H[i] < v)
                             --co[H[i]], H[i] = v + 1;
-               */
                     hi = H[u];
                 } else if (cur[u]->c && H[u] == H[cur[u]->dest]+1) {
                     addFlow(*cur[u], min(ec[u], cur[u]->c));
