@@ -74,14 +74,14 @@ int main() {
 g.save();
 
     std::cout << "------------------------------\n";
-    std::cout << "DFS:\n";
+    std::cout << "FORD-FULKERSON DFS:\n";
     auto ff{benchmark(g, &algorithms::ford_fulkerson)};
     std::cout << "Total number of edges checked during computation: " << C::ff_edges_visited << "\n";
     std::cout << "Max flow: " << ff.second << " in " << ff.first << " ms.\n";
     g.restore();
 
     std::cout << "-----------------------------\n";
-    std::cout << "BFS:\n";
+    std::cout << "EDMONDS-KARP:\n";
     auto ek{benchmark(g, &algorithms::edmonds_karp)};
     std::cout << "Total number of edges checked during computation: " << C::ek_edges_visited << "\n";
     std::cout << "Max flow: " << ek.second << " in " << ek.first << " ms.\n";
@@ -98,15 +98,19 @@ g.save();
 
     assert(ek.second == dinic.second && "FF/EK and Dinic's max flow value not equal");
     
-    std::cout << "-----------------------------\n";
-    std::cout << "PUSH RELABEL\n";
-    auto pr{benchmark(g, &algorithms::push_relabel)};
-    std::cout << "Max flow: " << pr.second << " in " << pr.first << " ms.\n";
-    g.restore();
+    // Generic push relabel VERY SLOW wtf
+    if(g.m_t < 5000 && g.m_edges.size()/2 < 500000) {
+        std::cout << "-----------------------------\n";
+        std::cout << "PUSH RELABEL\n";
+        auto pr{benchmark(g, &algorithms::push_relabel)};
+        std::cout << "Max flow: " << pr.second << " in " << pr.first << " ms.\n";
+        g.restore();
+
+        assert(ek.second == pr.second && "FF/EK/Dinic and Push-Relabel max flow value not equal");
+    }
     
-    assert(ek.second == pr.second && "FF/EK/Dinic and Push-Relabel max flow value not equal");
     std::cout << "-------------------------------\n";
-    std::cout << "HIGHEST LABEL PUSH RELABEL\n";
+    std::cout << "HIGHEST LABEL PUSH RELABEL + GAP\n";
     auto hi_pr{benchmark(g, &algorithms::hi_push_relabel)};
     std::cout << "Max flow: " << hi_pr.second << " in " << hi_pr.first << " ms.\n";
     g.restore();

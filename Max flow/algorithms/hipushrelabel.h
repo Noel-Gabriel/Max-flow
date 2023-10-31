@@ -8,7 +8,7 @@ namespace algorithms {
     /**
      * @brief Computes the maximum flow in a given flow network using 
      *        Goldberg's and Tarjan's push-relabel algorithm and the
-     *        highest label selection rule.
+     *        highest label selection rule + gap relabel heuristic.
      * 
      *
      *
