@@ -56,7 +56,7 @@ struct PushRelabel {
             }
             int u = hs[hi].back();
             hs[hi].pop_back();
-            while (ec[u] > 0)  // discharge u
+            while (ec[u] > 0) {  // discharge u
                 if (cur[u] == g[u].data() + size(g[u])) {
                     H[u] = 1e9;
                     for (Edge& e : g[u]) {
@@ -75,6 +75,7 @@ struct PushRelabel {
                 } else {
                     ++cur[u];
                 }
+            }
         }
     }
     void printLabels() {

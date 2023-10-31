@@ -1,5 +1,5 @@
-#ifndef EDMONDS_KARP_TPP
-#define EDMONDS_KARP_TPP
+#ifndef EDMONDS_KARP_IPP
+#define EDMONDS_KARP_IPP
 
 #include "fordfulkerson.ipp"
 #include "../data structures/graph.h"

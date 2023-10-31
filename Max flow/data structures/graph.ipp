@@ -1,5 +1,5 @@
-#ifndef GRAPH_TPP
-#define GRAPH_TPP
+#ifndef GRAPH_IPP
+#define GRAPH_IPP
 
 #include <iostream>
 #include <string>

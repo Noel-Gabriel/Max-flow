@@ -1,5 +1,5 @@
-#ifndef FORD_FULKERSON_TPP
-#define FORD_FULKERSON_TPP
+#ifndef FORD_FULKERSON_IPP
+#define FORD_FULKERSON_IPP
 
 #include "../data structures/graph.h"
 #include "counter.h"

@@ -1,5 +1,5 @@
-#ifndef DINIC_TPP
-#define DINIC_TPP
+#ifndef DINIC_IPP
+#define DINIC_IPP
 
 #include "../data structures/graph.h"
 #include "counter.h"

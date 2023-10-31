@@ -1,6 +1,6 @@
 /**
-#ifndef SPLAY_TREE_TPP
-#define SPLAY_TREE_TPP
+#ifndef SPLAY_TREE_IPP
+#define SPLAY_TREE_IPP
 
 #include <iostream>
 
