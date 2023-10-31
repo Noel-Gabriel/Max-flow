@@ -2,7 +2,6 @@
 #define PUSH_RELABEL_IPP
 
 #include "../data structures/graph.h"
-#include "dinic.h" // for the build_level_graph function to initialize labels
 
 #include <iostream>
 #include <vector>
@@ -12,37 +11,6 @@
 using namespace std::chrono;
 
 namespace algorithms {
-    /**
-     * @brief Initializes the labels for the push-relabel algorithm.
-     *
-     *        The label for a vertex v is initialized as the shortest 
-     *        v-t distance. labels[s] = #vertices, labels[t] = 0
-     * 
-     *
-     * @tparam flow_t Flow type.
-     * @param graph The residual network.
-     * @return The (best) first valid label.
-     */
-
-    template <typename flow_t>
-    std::vector<int> initialize_labels(data_structures::Graph<flow_t>& graph) {
-        std::size_t n{graph.m_adj_list.size()}; // number of vertices
-        std::vector<int> labels(n);
-        // get shortest s-v distance, shortest v-t distance is then 
-        // s-t distance minus s-v distance
-        std::vector<int> level = build_level_graph(graph);
-        int max_distance{level[graph.m_t]};
-        for(int i{0}; i < n; ++i) {
-            if(level[i] == -1) {
-                labels[i] = 0; 
-                continue;
-            }
-            labels[i] = std::max(max_distance-level[i], 0);
-        }
-        labels[graph.m_s] = n;
-        return labels;
-    }
-
 
     /**
      * @brief Performs the push operation in the push-relabel algorithm.
@@ -136,16 +104,17 @@ namespace algorithms {
         auto& adj_list{graph.m_adj_list};
         auto& edges{graph.m_edges};
 
+        std::size_t n{adj_list.size()}; // number of vertices
+
         // labels
-        //std::vector<int> labels{initialize_labels(graph)};
-        std::vector<int> labels(adj_list.size(), 0);
-        labels[graph.m_s] = adj_list.size();
+        std::vector<int> labels(n, 0);
+        labels[graph.m_s] = n;
 
         // "current-arc" data structure proposed by wikipedia
-        std::vector<int> current_edges(adj_list.size(), 0);
+        std::vector<int> current_edges(n, 0);
 
         // excess flow of each vertex
-        std::vector<flow_t> excess(adj_list.size(), 0);
+        std::vector<flow_t> excess(n, 0);
         excess[graph.m_s] = std::numeric_limits<flow_t>::max();
         // queue of active vertices
         std::queue<int> active{};

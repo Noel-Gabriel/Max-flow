@@ -72,7 +72,7 @@ int main() {
     std::cout << "Max flow: " << max_flow_hipr << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms.\n";
 
 g.save();
-
+    
     std::cout << "------------------------------\n";
     std::cout << "FORD-FULKERSON DFS:\n";
     auto ff{benchmark(g, &algorithms::ford_fulkerson)};

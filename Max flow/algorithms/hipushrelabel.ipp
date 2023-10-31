@@ -20,19 +20,16 @@ namespace algorithms {
      * @return int The highest label when initializing the buckets.
      */
     template <typename flow_t>
-    int initialize_buckets(data_structures::Graph<flow_t>& graph, std::vector<flow_t>& excess, 
+    void initialize_buckets(data_structures::Graph<flow_t>& graph, std::vector<flow_t>& excess, 
             std::vector<std::queue<int>>& active, const std::vector<int>& labels) {
-        int highest{-1};
         for(int edge_index : graph.m_adj_list[graph.m_s]) {
             auto& edge{graph.m_edges[edge_index]};
             if(push(excess, edge, graph.m_edges[edge_index^1])) {
                 if(edge.head != graph.m_t) {
-                    highest = std::max(highest, labels[edge.head]);
                     active[labels[edge.head]].push(edge.head);
                 }
             }
         }
-        return highest;
     }
 
     /**
@@ -51,10 +48,10 @@ namespace algorithms {
 
         auto& adj_list{graph.m_adj_list};
         auto& edges{graph.m_edges};
+
         std::size_t n{adj_list.size()}; // number of vertices
 
         // labels. Initialized as shortest v-t distance for all vertices v
-        //std::vector<int> labels(initialize_labels(graph));
         std::vector<int> labels(n, 0);
         labels[graph.m_s] = n;
 
@@ -70,11 +67,12 @@ namespace algorithms {
         std::vector<std::queue<int>> active(2*n, std::queue<int>{});
 
         // preflow + correct buckets of labels initialization
-        int highest{initialize_buckets(graph, excess, active, labels)};
+        initialize_buckets(graph, excess, active, labels);
+        int highest{0};
         
         // gap heuristic from wikipedia. gap[i] = number of vertices with label i
         std::vector<int> gap(2*n, 0);
-        gap[0] = n-1;
+        gap[graph.m_s] = n-1;
 
         // similar to the main loop of the generic push-relabel
         while(true) {

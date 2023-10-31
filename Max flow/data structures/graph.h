@@ -90,7 +90,7 @@ namespace data_structures {
             // enumerates new edges added to the network.
             int m_edges_index{0};
 
-            // saves the current graph. All algorithms act on the capacity of and edge
+            // saves the current graph. All algorithms act on an edge's capacity
             // and we need to be able to restore the graph to try
             // different algorithms on the same graph.
             std::vector<std::vector<int>> m_adj_list_backup{};
