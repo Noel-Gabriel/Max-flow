@@ -1,7 +1,7 @@
 # generated using https://solver.assistedcoding.eu/makefilegen because I have no idea about makefiles
 
-OBJS	= main.o graphreader.o counter.o
-SOURCE	= main.cpp io/graphreader.cpp algorithms/counter.cpp
+OBJS	= main.o graphreader.o
+SOURCE	= main.cpp io/graphreader.cpp
 HEADER	= 
 OUT	= benchmarks
 CC	 = g++
@@ -16,10 +16,6 @@ main.o: main.cpp
 
 graphreader.o: io/graphreader.cpp
 	$(CC) $(FLAGS) io/graphreader.cpp 
-
-counter.o: algorithms/counter.cpp
-	$(CC) $(FLAGS) algorithms/counter.cpp 
-
 
 clean:
 	rm -f $(OBJS) $(OUT)

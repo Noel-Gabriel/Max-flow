@@ -18,7 +18,7 @@
 template <typename flow_t>
 void start(ds::Graph<flow_t>& graph, int num_of_runs) { 
     using mf_algorithm = flow_t (*) (ds::Graph<flow_t>& graph);
-    
+
     num_of_runs = std::max(num_of_runs, 1);
     std::map<std::string, mf_algorithm> to_check = {
        {"FORD-FULKERSON DFS"                , &algorithms::ford_fulkerson},
@@ -68,7 +68,7 @@ auto benchmark(ds::Graph<flow_t>& graph, flow_t (* mf_algorithm) (ds::Graph<flow
 
 template <typename flow_t>
 void printResult(flow_t result_max_flow, auto result_time, std::string_view algorithm_used, int num_of_runs) {
-    std::cout << "\n------------------------------\n\n";
+    std::cout << "\n--------------------------------------------------------\n\n";
     std::cout << algorithm_used << ":\n";
     std::string edges_visited{};
     if(algorithm_used == "FORD-FULKERSON DFS") {edges_visited = std::to_string(C::ff_edges_visited);}

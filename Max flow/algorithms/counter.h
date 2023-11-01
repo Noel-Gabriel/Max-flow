@@ -10,9 +10,9 @@
  * ford-fulkerson and edmonds-karp.
  */
 namespace C {
-    extern unsigned long long ff_edges_visited;
-    extern unsigned long long ek_edges_visited;
-    extern unsigned long long dinic_edges_visited;
+    unsigned long long ff_edges_visited{0};
+    unsigned long long ek_edges_visited{0};
+    unsigned long long dinic_edges_visited{0};
 }
 
 #endif

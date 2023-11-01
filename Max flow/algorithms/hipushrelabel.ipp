@@ -10,7 +10,9 @@
 namespace algorithms {
 
     /**
-     * @brief Initializes the acitve buckets.
+     * @brief Initializes the active buckets.
+     *        See https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
+     *        for the highest selection rule.
      * 
      * @tparam flow_t Flow type.
      * @param graph The residual network.
