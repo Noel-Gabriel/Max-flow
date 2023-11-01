@@ -6,13 +6,13 @@
 namespace algorithms {
 
     /**
-     * @brief Computes the maximum flow in a given flow network using 
+     * @brief Computes the value of a maximum flow in the given graph using 
      *        Goldberg's and Tarjan's push-relabel algorithm.
      * 
      *
      * @tparam flow_t Flow type.
      * @param graph The residual network.
-     * @return The maximum flow.
+     * @return The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t push_relabel(ds::Graph<flow_t>& graph);

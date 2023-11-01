@@ -6,7 +6,6 @@
 #include "algorithms/hipushrelabel.h"
 #include "algorithms/counter.h"
 #include "io/graphreader.h"
-#include "PushRelabel.h"
 
 #include <iostream>
 #include <chrono>
@@ -37,54 +36,8 @@ auto benchmark(Graph<flow_t>& graph, flow_t (* mf_algorithm) (Graph<flow_t>& gra
     return std::pair{elapsed_time, max_flow};
 }
 
-bool check(auto& graph) {
-    for(int i{0}; i < graph.m_adj_list.size(); ++i) {
-        for(int j{0}; j < graph.m_adj_list[i].size(); ++j) {
-            auto* edge{graph.m_adj_list[i][j]};
-            if(edge->reverse->reverse != edge) {
-                std::cout << edge->tail << " " << edge->head << "\n";
-                std::cout << edge->reverse->reverse->tail << " " << edge->reverse->reverse->head << "\n";
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 int main() {
     Graph<int> g = io::load_graph_from_file("/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs");
-
-    PushRelabel hpr = io::load_pr("/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs");
-
-    /*
-    Graph<int> g{8};
-    g.add_edge(0, 1, 2);
-
-    g.add_edge(0, 2, 4);
-    g.add_edge(1, 2, 3);
-    g.add_edge(1, 3, 1);
-    g.add_edge(2, 3, 8);
-    g.add_edge(3, 7, 8);
-    g.add_edge(3, 5, 9);
-    g.add_edge(5, 6, 10);*/
-/*
-    PushRelabel hpr(8);
-    hpr.addEdge(0, 1, 2);
-    hpr.addEdge(0, 2, 4);
-    hpr.addEdge(1, 2, 3);
-    hpr.addEdge(1, 3, 1);
-    hpr.addEdge(2, 3, 8);
-    hpr.addEdge(3, 7, 8);
-    hpr.addEdge(3, 5, 9);
-    hpr.addEdge(5, 6, 10);
-*/
-    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-    long long max_flow_hipr = hpr.calc(0, g.m_t);
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    //hpr.printLabels();
-    
-    std::cout << "HIPR:\n";
-    std::cout << "Max flow: " << max_flow_hipr << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms.\n";
 
     std::cout << "------------------------------\n";
     std::cout << "FORD-FULKERSON DFS:\n";

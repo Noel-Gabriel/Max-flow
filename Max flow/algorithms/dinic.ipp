@@ -14,12 +14,13 @@ namespace algorithms {
      *        number of edges on the shortest path from s to the vertex.
      * 
      * @tparam flow_t Flow type.
-     * @param graph The residual network 
+     * @param graph The residual network. 
      * @return A vector (container) where each vertex indexes its level in the graph.
      */
     template <typename flow_t>
     std::vector<int> build_level_graph(const ds::Graph<flow_t>& graph) {
         std::vector<int> level(graph.m_n, -1);
+        // source set to level 0
         level[graph.m_s] = 0;
         std::queue<int> to_visit{};
         to_visit.push(graph.m_s);
@@ -27,6 +28,7 @@ namespace algorithms {
             int vertex{to_visit.front()};
             to_visit.pop();
             for(auto* edge : graph.m_adj_list[vertex]) {
+                // counter for comparison, irrelevant to dinic's
                 ++C::dinic_edges_visited;
                 // edge can't push any more flow or next vertex has been visited already
                 if(edge->capacity <= 0 || level[edge->head] != -1) {
@@ -56,11 +58,11 @@ namespace algorithms {
     flow_t dinic_dfs(auto& graph, int vertex, flow_t flow_pushed, std::vector<int>& level, std::vector<int>& edges_to_visit) {
         // reached the sink
         if(graph.m_t == vertex) { 
-            //std::cout << graph.m_t << " <- ";
             return flow_pushed; 
         }
-        // only consider edges of each vertex which have not been visited by previous dfs' in the current level graph
+        // iterate over edges that have not been already visited/blocked
         for(int& i{edges_to_visit[vertex]}; i < graph.m_adj_list[vertex].size(); ++i) {
+            // counter for comparison, irrelevant to dinic's
             ++C::dinic_edges_visited;
             auto* edge{graph.m_adj_list[vertex][i]};
             // edge not part of a shortest path to t or is already saturated
@@ -73,8 +75,7 @@ namespace algorithms {
             if(push == 0) {
                 continue;
             }
-            //std::cout << vertex << ((vertex == graph.m_s)? "": " <- ");
-            // push through this edge
+            // else push through this edge
             edge->capacity -= push;
             // update reverse edge denoting total flow pushed through this edge
             edge->reverse->capacity += push;
@@ -90,25 +91,24 @@ namespace algorithms {
      * 
      * @tparam flow_t Flow type.
      * @param graph The residual network.
-     * @return flow_t The maximum flow.
+     * @return flow_t The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t dinic(ds::Graph<flow_t>& graph) {
-        // total maximum flow pushed.
+        // value of total flow pushed.
         flow_t max_flow{0};
         // flow pushed at each dfs
         flow_t flow_pushed{0};
         // stores the level or rank of each vertex
         std::vector<int> level = build_level_graph(graph);
         // stores the next edge that can be considered during the next dfs on the current level graph
-        // this is where dinic's is more efficient than ford-fulkerson
+        // avoids checking of edges that are known to be on a current blocking path to t
         std::vector<int> edges_to_visit(graph.m_n, 0);
         // while s-t path exists
         while(level[graph.m_t] != -1) {
-            //std::cout << "LEVEL: " << level[graph.m_t] << "\n";
             // push until a blocking flow is found
             while((flow_pushed = dinic_dfs<flow_t>(graph, graph.m_s, std::numeric_limits<flow_t>::max(), level, edges_to_visit))) {
-                //std::cout << "        flow pushed: " << flow_pushed << "\n";
+                // sum over all bottlenecks (min capacity edges) for all paths found
                 max_flow += flow_pushed;
             }
             // build new level graph and consider all edges again

@@ -40,18 +40,19 @@ namespace algorithms {
      *
      * @tparam flow_t Flow type.
      * @param graph The residual network.
-     * @return The maximum flow.
+     * @return The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t hi_push_relabel(ds::Graph<flow_t>& graph) {
-
+        // initialization
         auto& adj_list{graph.m_adj_list};
 
-        // labels. Initialized as shortest v-t distance for all vertices v
+        // labels (or heights), all 0 except for the source at n (#vertices in the graph)
         std::vector<int> labels(graph.m_n, 0);
         labels[graph.m_s] = graph.m_n;
 
         // "current-arc" suggested by wikipedia.
+        //https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
         std::vector<int> current_edges(graph.m_n, 0);
 
         // initialize excess
@@ -59,7 +60,7 @@ namespace algorithms {
         excess[graph.m_s] = std::numeric_limits<flow_t>::max();
 
         // active nodes are now stored into buckets indexed by their labels
-        // process active nodes from highest to lowest label
+        // process active nodes from highest to lowest label (all 0 at the start)
         std::vector<std::queue<int>> active(2*graph.m_n, std::queue<int>{});
 
         // preflow + correct buckets of labels initialization
@@ -75,6 +76,7 @@ namespace algorithms {
             // get the next active node with the highest label
             while(active[highest].empty()) {
                 if(highest == 0) {
+                    // excess at the sink at the end = value of a max flow
                     return excess[graph.m_t];
                 }
                 --highest;
@@ -84,6 +86,7 @@ namespace algorithms {
             // usual discharge operation
             if(vertex == graph.m_s || vertex == graph.m_t) { continue; }
             while(excess[vertex] > 0) {
+                // node still active, but no push operation possible -> relabel node, update gaps
                 if(current_edges[vertex] == adj_list[vertex].size()) {
                     current_edges[vertex] = relabel(graph, vertex, labels);
                     //update gap heuristic
@@ -92,21 +95,25 @@ namespace algorithms {
                     // no more vertices with current highest (active) label
                     if(labels[vertex] < graph.m_n && gap[highest] == 0) {
                         for(int i{0}; i < graph.m_n; ++i) {
-                            // vertices with highest < label < n can't be active, relabel them
+                            // vertices with highest current label < label < n can't be active, relabel them to n+1
                             if(highest < labels[i] && labels[i] < graph.m_n) {
                                 --gap[labels[i]];
                                 labels[i] = graph.m_n+1;
                             }
                         }
                     }
+                    // new highest label
                     highest = labels[vertex];
                 } else {
                     auto* edge{adj_list[vertex][current_edges[vertex]]};
+                    // push if edge not saturated and adjacent vertex at lower label (height)
                     if(edge->capacity > 0 && labels[vertex] == labels[edge->head]+1) {
+                        // add adjacent vertex to active nodes if it was a first push to this vertex
                         if(push(excess, edge)) {
                             active[labels[edge->head]].push(edge->head);
                         }
                     } else {
+                        // no push possible
                         ++current_edges[vertex];
                     }
                 }

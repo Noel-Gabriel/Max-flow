@@ -12,8 +12,8 @@ namespace algorithms {
      *        to find augmenting paths.
      * 
      * @tparam flow_t Flow type.
-     * @param graph The flow network we want to compute the maximum flow of.
-     * @return flow_t The maximum flow.
+     * @param graph The residual network.
+     * @return flow_t The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t edmonds_karp(ds::Graph<flow_t>& graph);

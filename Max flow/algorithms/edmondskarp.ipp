@@ -19,7 +19,7 @@ namespace algorithms {
      */
     template <typename flow_t>
     flow_t ff_bfs(const ds::Graph<flow_t>& graph, auto& augmenting_path) {
-        // queue for the bfs containing (vertex, pushed flow) pairs
+        // queue for the bfs containing (vertex, flow pushed so far) pairs
         std::queue<std::pair<int, flow_t>> to_visit{};
         // "infinite" flow to start the bfs
         to_visit.emplace(graph.m_s, std::numeric_limits<flow_t>::max());
@@ -28,6 +28,7 @@ namespace algorithms {
             auto current_vertex{to_visit.front()}; // (vertex, flow) pair
             to_visit.pop();
             for(auto* edge : graph.m_adj_list[current_vertex.first]) {
+                // counter for comparison, irrelevant to the search
                 ++C::ek_edges_visited;
                 // next vertex has already been visited or this edge is saturated
                 if(augmenting_path[edge->head] || edge->capacity <= 0) {
@@ -54,7 +55,7 @@ namespace algorithms {
      * 
      * @tparam flow_t Flow type.
      * @param graph The residual network.
-     * @return flow_t The maximum flow.
+     * @return flow_t The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t edmonds_karp(ds::Graph<flow_t>& graph) {

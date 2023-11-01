@@ -19,7 +19,7 @@ namespace algorithms {
      */
     template <typename flow_t>
     flow_t ff_dfs(const ds::Graph<flow_t>& graph, auto& augmenting_path) {
-        // stack for the dfs containing (vertex, pushed flow) pairs
+        // stack for the dfs containing (vertex, flow pushed so far) pairs
         std::stack<std::pair<int, flow_t>> to_visit{};
         // "infinite" flow from s to start the dfs
         to_visit.emplace(graph.m_s, std::numeric_limits<flow_t>::max());
@@ -28,6 +28,7 @@ namespace algorithms {
             auto current_vertex{to_visit.top()}; // (vertex, flow) pair
             to_visit.pop();
             for(auto* edge : graph.m_adj_list[current_vertex.first]) {
+                // counter for comparison, irrelevant to the search
                 ++C::ff_edges_visited;
                 // next vertex has already been visited or this edge is saturated
                 if(augmenting_path[edge->head] || edge->capacity <= 0) {
@@ -53,9 +54,9 @@ namespace algorithms {
      * 
      *
      * @tparam flow_t Flow type.
-     * @param graph The residual network to compute the maximum flow.
+     * @param graph The residual network.
      * @param search The search function to be used to find augmenting paths.
-     * @return The maximum flow of the given network.
+     * @return The value of a maximum flow.
      */
     template <typename flow_t>
     flow_t _ford_fulkerson(ds::Graph<flow_t>& graph, 
@@ -73,13 +74,10 @@ namespace algorithms {
             // update capacities
             while(v != graph.m_s) {
                 auto* edge = augmenting_path[v];
-                //std::cout << v << " <- ";
                 edge->capacity -= flow_pushed;
-                // the reversed edge is next to the non reversed edge, can use xor to index it
                 edge->reverse->capacity += flow_pushed;
                 v = edge->tail;
             }
-            //std::cout << "0 " << "     flow  pushed: " << flow_pushed << "\n";
             // increase total flow using the augmenting path found
             max_flow += flow_pushed;
             // clear current augmenting path for the next one
@@ -95,7 +93,7 @@ namespace algorithms {
      * 
      * @tparam flow_t Flow type.
      * @param graph The residual network.
-     * @return flow_t The maximum flow.
+     * @return flow_t The value of a maximum flow.
      */
     template <typename flow_t> 
     flow_t ford_fulkerson(ds::Graph<flow_t>& graph) {
