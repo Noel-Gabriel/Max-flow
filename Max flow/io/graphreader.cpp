@@ -6,10 +6,9 @@
 #include <fstream>
 #include <sstream>
 
-struct PushRelabel;
 
 namespace io {
-
+//
     /**
      * @brief Reads a graph in dimacs format.
      * 

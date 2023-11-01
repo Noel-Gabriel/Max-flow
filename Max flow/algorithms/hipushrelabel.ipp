@@ -52,7 +52,7 @@ namespace algorithms {
         labels[graph.m_s] = graph.m_n;
 
         // "current-arc" suggested by wikipedia.
-        //https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
+        // https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
         std::vector<int> current_edges(graph.m_n, 0);
 
         // initialize excess
