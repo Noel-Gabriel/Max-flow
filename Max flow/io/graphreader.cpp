@@ -31,7 +31,10 @@ namespace io {
         n_line >> n; // skip "p"
         n_line >> n; // skin problem definition "max" for maximum flow
         n_line >> n; // number of vertices
+        std::cout << "Graph with " << n << " vertices and ";
         ds::Graph<int> g{std::stoi(n)};
+        n_line >> n; // number of edges
+        std::cout << n << " edges.\n";
         // skip information about source and sink (always 0 and n-1)
         getline(file, line);
         getline(file, line);
