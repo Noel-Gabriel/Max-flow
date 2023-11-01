@@ -14,7 +14,7 @@ namespace algorithms {
      * @return flow_t The maximum flow.
      */
     template <typename flow_t>
-    flow_t dinic(data_structures::Graph<flow_t>& graph);
+    flow_t dinic(ds::Graph<flow_t>& graph);
     
 }
 

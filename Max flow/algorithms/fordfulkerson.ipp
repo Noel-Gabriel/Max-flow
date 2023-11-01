@@ -18,7 +18,7 @@ namespace algorithms {
      * @return The maximum flow that can be pushed on the path found.
      */
     template <typename flow_t>
-    flow_t ff_dfs(const auto& graph, std::vector<int>& augmenting_path) {
+    flow_t ff_dfs(const ds::Graph<flow_t>& graph, auto& augmenting_path) {
         // stack for the dfs containing (vertex, pushed flow) pairs
         std::stack<std::pair<int, flow_t>> to_visit{};
         // "infinite" flow from s to start the dfs
@@ -27,21 +27,20 @@ namespace algorithms {
         while(!to_visit.empty()) {
             auto current_vertex{to_visit.top()}; // (vertex, flow) pair
             to_visit.pop();
-            for(auto adj : graph.m_adj_list[current_vertex.first]) {
+            for(auto* edge : graph.m_adj_list[current_vertex.first]) {
                 ++C::ff_edges_visited;
-                auto& edge = graph.m_edges[adj]; // type Edge
                 // next vertex has already been visited or this edge is saturated
-                if(augmenting_path[edge.head] != -1 || edge.capacity <= 0) {
+                if(augmenting_path[edge->head] || edge->capacity <= 0) {
                     continue;
                 }
                 // maximum possible flow that can be pushed through this edge
-                flow_t new_flow_pushed{std::min(current_vertex.second, edge.capacity)};
+                flow_t new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
                 // remember the current edge
-                augmenting_path[edge.head] = adj;
-                if(edge.head == graph.m_t) {
+                augmenting_path[edge->head] = edge;
+                if(edge->head == graph.m_t) {
                     return new_flow_pushed;
                 }
-                to_visit.emplace(edge.head, new_flow_pushed);
+                to_visit.emplace(edge->head, new_flow_pushed);
             }
         }
         // no s-t path
@@ -59,12 +58,11 @@ namespace algorithms {
      * @return The maximum flow of the given network.
      */
     template <typename flow_t>
-    flow_t _ford_fulkerson(data_structures::Graph<flow_t>& graph, 
-            flow_t (* search) (const data_structures::Graph<flow_t>& graph,
-                    std::vector<int>& augmenting_path)) {
+    flow_t _ford_fulkerson(ds::Graph<flow_t>& graph, 
+            flow_t (* search) (const ds::Graph<flow_t>& graph, 
+                std::vector<typename ds::Graph<flow_t>::Edge*>& augmenting_path)) {
         // to save the augmenting path found by the given search function
-        std::vector<int> augmenting_path(graph.m_adj_list.size(), -1);
-        augmenting_path[graph.m_s] = 0;
+        std::vector<typename ds::Graph<flow_t>::Edge*> augmenting_path(graph.m_n, nullptr);
         // current total flow pushed
         flow_t max_flow{0};
         // flow pushed by the next augmenting path
@@ -74,18 +72,18 @@ namespace algorithms {
             int v{graph.m_t};
             // update capacities
             while(v != graph.m_s) {
-                int edge = augmenting_path[v];
+                auto* edge = augmenting_path[v];
                 //std::cout << v << " <- ";
-                graph.m_edges[edge].capacity -= flow_pushed;
+                edge->capacity -= flow_pushed;
                 // the reversed edge is next to the non reversed edge, can use xor to index it
-                graph.m_edges[edge^1].capacity += flow_pushed;
-                v = graph.m_edges[edge].tail;
+                edge->reverse->capacity += flow_pushed;
+                v = edge->tail;
             }
             //std::cout << "0 " << "     flow  pushed: " << flow_pushed << "\n";
             // increase total flow using the augmenting path found
             max_flow += flow_pushed;
             // clear current augmenting path for the next one
-            std::fill(augmenting_path.begin(), augmenting_path.end(), -1);
+            std::fill(augmenting_path.begin(), augmenting_path.end(), nullptr);
         }
         return max_flow;
     }
@@ -100,7 +98,7 @@ namespace algorithms {
      * @return flow_t The maximum flow.
      */
     template <typename flow_t> 
-    flow_t ford_fulkerson(data_structures::Graph<flow_t>& graph) {
+    flow_t ford_fulkerson(ds::Graph<flow_t>& graph) {
         return _ford_fulkerson<flow_t>(graph, &ff_dfs);
     }
 }

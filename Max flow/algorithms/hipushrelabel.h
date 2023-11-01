@@ -17,7 +17,7 @@ namespace algorithms {
      * @return The maximum flow.
      */
     template <typename flow_t>
-    flow_t hi_push_relabel(data_structures::Graph<flow_t>& graph);
+    flow_t hi_push_relabel(ds::Graph<flow_t>& graph);
         
 }
 

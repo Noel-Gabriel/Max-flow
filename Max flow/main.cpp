@@ -14,7 +14,7 @@
 
 
 template <typename flow_t>
-using Graph = data_structures::Graph<flow_t>;
+using Graph = ds::Graph<flow_t>;
 
 /**
  * @brief Function to benchmark a max flow algorithm given by the function pointer.
@@ -37,22 +37,37 @@ auto benchmark(Graph<flow_t>& graph, flow_t (* mf_algorithm) (Graph<flow_t>& gra
     return std::pair{elapsed_time, max_flow};
 }
 
+bool check(auto& graph) {
+    for(int i{0}; i < graph.m_adj_list.size(); ++i) {
+        for(int j{0}; j < graph.m_adj_list[i].size(); ++j) {
+            auto* edge{graph.m_adj_list[i][j]};
+            if(edge->reverse->reverse != edge) {
+                std::cout << edge->tail << " " << edge->head << "\n";
+                std::cout << edge->reverse->reverse->tail << " " << edge->reverse->reverse->head << "\n";
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 int main() {
     Graph<int> g = io::load_graph_from_file("/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs");
+
     PushRelabel hpr = io::load_pr("/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs");
+
     /*
     Graph<int> g{8};
     g.add_edge(0, 1, 2);
+
     g.add_edge(0, 2, 4);
     g.add_edge(1, 2, 3);
     g.add_edge(1, 3, 1);
     g.add_edge(2, 3, 8);
     g.add_edge(3, 7, 8);
     g.add_edge(3, 5, 9);
-    g.add_edge(5, 6, 10);
-    g.save();
-
+    g.add_edge(5, 6, 10);*/
+/*
     PushRelabel hpr(8);
     hpr.addEdge(0, 1, 2);
     hpr.addEdge(0, 2, 4);
@@ -71,8 +86,6 @@ int main() {
     std::cout << "HIPR:\n";
     std::cout << "Max flow: " << max_flow_hipr << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms.\n";
 
-g.save();
-    
     std::cout << "------------------------------\n";
     std::cout << "FORD-FULKERSON DFS:\n";
     auto ff{benchmark(g, &algorithms::ford_fulkerson)};
@@ -86,6 +99,7 @@ g.save();
     std::cout << "Total number of edges checked during computation: " << C::ek_edges_visited << "\n";
     std::cout << "Max flow: " << ek.second << " in " << ek.first << " ms.\n";
     g.restore();
+    
 
     assert(ek.second == ff.second && "Ford-Fulkerson and Edmonds-Karp max flow value not equal");
 
@@ -99,7 +113,7 @@ g.save();
     assert(ek.second == dinic.second && "FF/EK and Dinic's max flow value not equal");
     
     // Generic push relabel VERY SLOW wtf
-    if(g.m_t < 5000 && g.m_edges.size()/2 < 500000) {
+    if(g.m_n < 5000) {
         std::cout << "-----------------------------\n";
         std::cout << "PUSH RELABEL\n";
         auto pr{benchmark(g, &algorithms::push_relabel)};
@@ -108,7 +122,7 @@ g.save();
 
         assert(ek.second == pr.second && "FF/EK/Dinic and Push-Relabel max flow value not equal");
     }
-    
+
     std::cout << "-------------------------------\n";
     std::cout << "HIGHEST LABEL PUSH RELABEL + GAP\n";
     auto hi_pr{benchmark(g, &algorithms::hi_push_relabel)};
@@ -116,5 +130,6 @@ g.save();
     g.restore();
 
     assert(ek.second == hi_pr.second && "FF/EK/Dinic/PR and High Push-Relabel max flow value not equal");
+
     return 0;
 }

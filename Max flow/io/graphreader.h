@@ -15,7 +15,7 @@ namespace io {
      * @param path path to dimacs file.
      * @return data_structures::Graph<int> The graph as a residual network.
      */
-    data_structures::Graph<int> load_graph_from_file(std::string_view path);
+    ds::Graph<int> load_graph_from_file(std::string_view path);
 
     PushRelabel load_pr(std::string_view path);
     

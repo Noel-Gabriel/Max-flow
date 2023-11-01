@@ -17,7 +17,7 @@ namespace io {
      * @param path path to dimacs file.
      * @return data_structures::Graph<int> The graph as a residual network.
      */
-    data_structures::Graph<int> load_graph_from_file(std::string_view path) {
+    ds::Graph<int> load_graph_from_file(std::string_view path) {
         std::ifstream file(path);
         std::string line{};
         if(!file.is_open()) {
@@ -32,7 +32,7 @@ namespace io {
         n_line >> n; // skip "p"
         n_line >> n; // skin problem definition "max" for maximum flow
         n_line >> n; // number of vertices
-        data_structures::Graph<int> g{std::stoi(n)};
+        ds::Graph<int> g{std::stoi(n)};
         // skip information about source and sink (always 0 and n-1)
         getline(file, line);
         getline(file, line);

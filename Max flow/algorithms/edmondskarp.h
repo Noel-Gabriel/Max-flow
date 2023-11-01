@@ -16,7 +16,7 @@ namespace algorithms {
      * @return flow_t The maximum flow.
      */
     template <typename flow_t>
-    flow_t edmonds_karp(data_structures::Graph<flow_t>& graph);
+    flow_t edmonds_karp(ds::Graph<flow_t>& graph);
 }
 
 #include "edmondskarp.ipp"

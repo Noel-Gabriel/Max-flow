@@ -15,7 +15,7 @@ namespace algorithms {
      * @return flow_t The maximum flow.
      */
     template <typename flow_t>
-    flow_t ford_fulkerson(data_structures::Graph<flow_t>& graph);
+    flow_t ford_fulkerson(ds::Graph<flow_t>& graph);
 
 }
 

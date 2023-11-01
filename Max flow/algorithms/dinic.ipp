@@ -18,23 +18,22 @@ namespace algorithms {
      * @return A vector (container) where each vertex indexes its level in the graph.
      */
     template <typename flow_t>
-    std::vector<int> build_level_graph(const data_structures::Graph<flow_t>& graph) {
-        std::vector<int> level(graph.m_adj_list.size(), -1);
+    std::vector<int> build_level_graph(const ds::Graph<flow_t>& graph) {
+        std::vector<int> level(graph.m_n, -1);
         level[graph.m_s] = 0;
         std::queue<int> to_visit{};
         to_visit.push(graph.m_s);
         while(!to_visit.empty()) {
             int vertex{to_visit.front()};
             to_visit.pop();
-            for(auto adj : graph.m_adj_list[vertex]) {
+            for(auto* edge : graph.m_adj_list[vertex]) {
                 ++C::dinic_edges_visited;
-                auto& edge{graph.m_edges[adj]};
                 // edge can't push any more flow or next vertex has been visited already
-                if(edge.capacity <= 0 || level[edge.head] != -1) {
+                if(edge->capacity <= 0 || level[edge->head] != -1) {
                     continue;
                 }
-                level[edge.head] = level[vertex]+1;
-                to_visit.push(edge.head);
+                level[edge->head] = level[vertex]+1;
+                to_visit.push(edge->head);
             }
         }
         return level;
@@ -63,22 +62,22 @@ namespace algorithms {
         // only consider edges of each vertex which have not been visited by previous dfs' in the current level graph
         for(int& i{edges_to_visit[vertex]}; i < graph.m_adj_list[vertex].size(); ++i) {
             ++C::dinic_edges_visited;
-            auto& edge{graph.m_edges[graph.m_adj_list[vertex][i]]};
+            auto* edge{graph.m_adj_list[vertex][i]};
             // edge not part of a shortest path to t or is already saturated
-            if(level[edge.head] - 1 != level[vertex] || edge.capacity <= 0) {
+            if(level[edge->head] - 1 != level[vertex] || edge->capacity <= 0) {
                 continue;
             }
             // possible flow that can be pushed using this edge on the path to t
-            flow_t push{dinic_dfs(graph, edge.head, std::min(flow_pushed, edge.capacity), level, edges_to_visit)};
+            flow_t push{dinic_dfs(graph, edge->head, std::min(flow_pushed, edge->capacity), level, edges_to_visit)};
             // no s-t path using this edge
             if(push == 0) {
                 continue;
             }
             //std::cout << vertex << ((vertex == graph.m_s)? "": " <- ");
             // push through this edge
-            edge.capacity -= push;
+            edge->capacity -= push;
             // update reverse edge denoting total flow pushed through this edge
-            graph.m_edges[graph.m_adj_list[vertex][i]^1].capacity += push;
+            edge->reverse->capacity += push;
             return push;
         }
         // no s-t path using this vertex
@@ -94,7 +93,7 @@ namespace algorithms {
      * @return flow_t The maximum flow.
      */
     template <typename flow_t>
-    flow_t dinic(data_structures::Graph<flow_t>& graph) {
+    flow_t dinic(ds::Graph<flow_t>& graph) {
         // total maximum flow pushed.
         flow_t max_flow{0};
         // flow pushed at each dfs
@@ -103,7 +102,7 @@ namespace algorithms {
         std::vector<int> level = build_level_graph(graph);
         // stores the next edge that can be considered during the next dfs on the current level graph
         // this is where dinic's is more efficient than ford-fulkerson
-        std::vector<int> edges_to_visit(graph.m_adj_list.size(), 0);
+        std::vector<int> edges_to_visit(graph.m_n, 0);
         // while s-t path exists
         while(level[graph.m_t] != -1) {
             //std::cout << "LEVEL: " << level[graph.m_t] << "\n";

@@ -23,17 +23,17 @@ namespace algorithms {
      * @param edge The edge used for pushing.
      */
     template <typename flow_t>
-    bool push(std::vector<flow_t>& excess, auto& edge, auto& reverse_edge) {
-        flow_t to_push = std::min(excess[edge.tail], edge.capacity);
+    bool push(std::vector<flow_t>& excess, auto* edge) {
+        flow_t to_push = std::min(excess[edge->tail], edge->capacity);
         // update excess
-        excess[edge.tail] -= to_push;
-        excess[edge.head] += to_push;
+        excess[edge->tail] -= to_push;
+        excess[edge->head] += to_push;
         //std::cout << "PUSHED FROM " << vertex << " TO " <<graph.m_edges[edge].head << " TOTAL OF " << to_push << " UNITS\n";
         // push
-        edge.capacity -= to_push;
-        reverse_edge.capacity += to_push;
+        edge->capacity -= to_push;
+        edge->reverse->capacity += to_push;
         // only add the first time node is activated.
-        return to_push && to_push == excess[edge.head];
+        return to_push && to_push == excess[edge->head];
     }
 
     /**
@@ -48,12 +48,11 @@ namespace algorithms {
      * @param active Queue for active vertices.
      */
     template <typename flow_t>
-    void initialize_preflow(data_structures::Graph<flow_t>& graph, std::vector<flow_t>& excess, std::queue<int>& active) {
-        for(int edge_index : graph.m_adj_list[graph.m_s]) {
+    void initialize_preflow(ds::Graph<flow_t>& graph, std::vector<flow_t>& excess, std::queue<int>& active) {
+        for(auto* edge : graph.m_adj_list[graph.m_s]) {
             // saturate each outgoing edge from s
-            auto& edge{graph.m_edges[edge_index]};
-            if(push(excess, edge, graph.m_edges[edge_index^1])) {
-                active.push(edge.head);
+            if(push(excess, edge)) {
+                active.push(edge->head);
             }
         }
     }
@@ -70,15 +69,15 @@ namespace algorithms {
      * @return The new label value for vertex.
      */
     template <typename flow_t>
-    int relabel(data_structures::Graph<flow_t>& graph, int vertex, std::vector<int>& labels) {
+    int relabel(ds::Graph<flow_t>& graph, int vertex, std::vector<int>& labels) {
         int min_label{INT_MAX};
         int edge_index{0};
         //std::cout << "current label: " << labels[vertex] << ", relabeling to ";
         for(int i{0}; i < graph.m_adj_list[vertex].size(); ++i) {
-            auto& edge = graph.m_edges[graph.m_adj_list[vertex][i]];
-            if(edge.capacity > 0) {
-                if(labels[edge.head] < min_label) {
-                    min_label = labels[edge.head];
+            auto* edge{graph.m_adj_list[vertex][i]};
+            if(edge->capacity > 0) {
+                if(labels[edge->head] < min_label) {
+                    min_label = labels[edge->head];
                     edge_index = i;
                 }
             }
@@ -99,22 +98,20 @@ namespace algorithms {
      * @return The maximum flow.
      */
     template <typename flow_t>
-    flow_t push_relabel(data_structures::Graph<flow_t>& graph) {
+    flow_t push_relabel(ds::Graph<flow_t>& graph) {
         // initialization
         auto& adj_list{graph.m_adj_list};
-        auto& edges{graph.m_edges};
 
-        std::size_t n{adj_list.size()}; // number of vertices
 
         // labels
-        std::vector<int> labels(n, 0);
-        labels[graph.m_s] = n;
+        std::vector<int> labels(graph.m_n, 0);
+        labels[graph.m_s] = graph.m_n;
 
         // "current-arc" data structure proposed by wikipedia
-        std::vector<int> current_edges(n, 0);
+        std::vector<int> current_edges(graph.m_n, 0);
 
         // excess flow of each vertex
-        std::vector<flow_t> excess(n, 0);
+        std::vector<flow_t> excess(graph.m_n, 0);
         excess[graph.m_s] = std::numeric_limits<flow_t>::max();
         // queue of active vertices
         std::queue<int> active{};
@@ -131,11 +128,10 @@ namespace algorithms {
                 if(current_edges[vertex] == adj_list[vertex].size()) {
                     current_edges[vertex] = relabel(graph, vertex, labels);
                 } else {
-                    int edge_index{adj_list[vertex][current_edges[vertex]]};
-                    auto& edge{edges[edge_index]};
-                    if(edge.capacity > 0 && labels[vertex] > labels[edge.head]) {
-                        if(push(excess, edge, edges[edge_index^1])) {
-                            active.push(edge.head);
+                    auto* edge{adj_list[vertex][current_edges[vertex]]};
+                    if(edge->capacity > 0 && labels[vertex] > labels[edge->head]) {
+                        if(push(excess, edge)) {
+                            active.push(edge->head);
                         }
                     } else {
                         ++current_edges[vertex];

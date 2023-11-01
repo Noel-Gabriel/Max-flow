@@ -9,9 +9,9 @@ ng.netgen_generate(seed=-1,      # -1 = random seed
                    maxcost=1,    # irrelevant, needed to generate max flow problem
                    sources=1,    # single source, 0 
                    sinks=1,      # single sink, nodes-1
-                   maxcap=5000,    # max possible capacity on an edge
-                   mincap=1000,     # min possible capacity on an edge
+                   maxcap=10,    # max possible capacity on an edge
+                   mincap=1,     # min possible capacity on an edge
                    supply=1,     # honestly no idea what this does, but needed to generate edges with maxcap and mincap
-                   nodes=400,    # number of vertices
-                   density=50000, # number of edges
+                   nodes=5001,    # number of vertices
+                   density=1000000, # number of edges
                    fname="/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs") # where save the generated graph
