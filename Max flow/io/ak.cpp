@@ -3,11 +3,19 @@
 /* Boris Cherkassky - cher@theory.stanford.edu, on.cher@zib-berlin.de */
 /* Andrew V. Goldberg - goldberg@cs.stanford.edu */
 
+// http://www.informatik.uni-trier.de/~naeher/Professur/research/generators/maxflow/ak/
+
 // translated to C++ and to be able to write to files
 
 #include <iostream>
 #include <fstream>
 
+/**
+ * @brief Generates "hard" max flow problem using A. V. Goldberg's and
+ *        B. Cherkassky's ak generator.
+ * 
+ * @param n 
+ */
 void generate_hard_problem(std::string path, int n) {
    using std::to_string;
    if(n < 2) { return; }
