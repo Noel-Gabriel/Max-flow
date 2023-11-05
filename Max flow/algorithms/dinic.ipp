@@ -13,12 +13,12 @@ namespace algorithms {
      * @brief Assigns each vertex in the graph a level, where the level is the
      *        number of edges on the shortest path from s to the vertex.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network. 
      * @return A vector (container) where each vertex indexes its level in the graph.
      */
-    template <typename flow_t>
-    std::vector<int> build_level_graph(const ds::Graph<flow_t>& graph) {
+    template <typename T>
+    std::vector<int> build_level_graph(const ds::Graph<T>& graph) {
         std::vector<int> level(graph.m_n, -1);
         // source set to level 0
         level[graph.m_s] = 0;
@@ -46,7 +46,7 @@ namespace algorithms {
      *        current layered network.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @param vertex The current vertex visited by the search.
      * @param flow_pushed The flow pushed to this vertex so far.
@@ -54,8 +54,8 @@ namespace algorithms {
      * @param edges_to_visit The edges that the current dfs needs to consider.
      * @return The flow pushed on the augmenting path found.
      */
-    template <typename flow_t>
-    flow_t dinic_dfs(auto& graph, int vertex, flow_t flow_pushed, std::vector<int>& level, std::vector<int>& edges_to_visit) {
+    template <typename T>
+    T dinic_dfs(auto& graph, int vertex, T flow_pushed, std::vector<int>& level, std::vector<int>& edges_to_visit) {
         // reached the sink
         if(graph.m_t == vertex) { 
             return flow_pushed; 
@@ -70,7 +70,7 @@ namespace algorithms {
                 continue;
             }
             // possible flow that can be pushed using this edge on the path to t
-            flow_t push{dinic_dfs(graph, edge->head, std::min(flow_pushed, edge->capacity), level, edges_to_visit)};
+            T push{dinic_dfs(graph, edge->head, std::min(flow_pushed, edge->capacity), level, edges_to_visit)};
             // no s-t path using this edge
             if(push == 0) {
                 continue;
@@ -89,16 +89,16 @@ namespace algorithms {
      * @brief Computes the maximum flow of the given graph using 
      *        Dinic's algorithm.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
-     * @return flow_t The value of a maximum flow.
+     * @return T The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t dinic(ds::Graph<flow_t>& graph) {
+    template <typename T>
+    T dinic(ds::Graph<T>& graph) {
         // value of total flow pushed.
-        flow_t max_flow{0};
+        T max_flow{0};
         // flow pushed at each dfs
-        flow_t flow_pushed{0};
+        T flow_pushed{0};
         // stores the level or rank of each vertex
         std::vector<int> level = build_level_graph(graph);
         // stores the next edge that can be considered during the next dfs on the current level graph
@@ -107,7 +107,7 @@ namespace algorithms {
         // while s-t path exists
         while(level[graph.m_t] != -1) {
             // push until a blocking flow is found
-            while((flow_pushed = dinic_dfs<flow_t>(graph, graph.m_s, std::numeric_limits<flow_t>::max(), level, edges_to_visit))) {
+            while((flow_pushed = dinic_dfs<T>(graph, graph.m_s, std::numeric_limits<T>::max(), level, edges_to_visit))) {
                 // sum over all bottlenecks (min capacity edges) for all paths found
                 max_flow += flow_pushed;
             }

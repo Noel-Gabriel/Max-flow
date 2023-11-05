@@ -10,14 +10,14 @@
  * @brief Starts each algorithm on the given network and measures the elapsed time of
           execution of each algorithm.
  * 
- * @tparam flow_t Flow type.
+ * @tparam T Flow type.
  * @param graph The residual network to test.
  * @param num_of_runs The number of runs per algorithm.
  */
  // add return for results?
-template <typename flow_t>
-void start(ds::Graph<flow_t>& graph, int num_of_runs) { 
-    using mf_algorithm = flow_t (*) (ds::Graph<flow_t>& graph);
+template <typename T>
+void start(ds::Graph<T>& graph, int num_of_runs) { 
+    using mf_algorithm = T (*) (ds::Graph<T>& graph);
 
     num_of_runs = std::max(num_of_runs, 1);
     std::map<std::string, mf_algorithm> to_check = {
@@ -29,11 +29,12 @@ void start(ds::Graph<flow_t>& graph, int num_of_runs) {
     };
 
     std::chrono::microseconds::rep elapsed_time{};
-    flow_t max_flow{0};
+    T max_flow{0};
     // remember max flow values computed and their average times
-    //std::map<std::string, flow_t> max_flows{};
+    //std::map<std::string, T> max_flows{};
     for(auto const& algorithm : to_check) {
         for(int i{0}; i < num_of_runs; ++i) {
+            // TODO: generate new graph with the same number of nodes and edges in each run
             auto result{benchmark(graph, algorithm.second)};
             graph.restore();
             elapsed_time += result.first;
@@ -48,26 +49,26 @@ void start(ds::Graph<flow_t>& graph, int num_of_runs) {
 /**
  * @brief Function to benchmark a max flow algorithm given by the function pointer.
  * 
- * @tparam flow_t Flow type.
+ * @tparam T Flow type.
  * @param graph The residual network.
  * @param mf_algorithm Function pointer to the algorithm we want to time.
  * @return auto pair of (elapsed_time [ms], computed max flow)
  */
-template <typename flow_t>
-auto benchmark(ds::Graph<flow_t>& graph, flow_t (* mf_algorithm) (ds::Graph<flow_t>& graph)) {
+template <typename T>
+auto benchmark(ds::Graph<T>& graph, T (* mf_algorithm) (ds::Graph<T>& graph)) {
     std::chrono::steady_clock::time_point start;
     std::chrono::steady_clock::time_point end;
 
     start = std::chrono::steady_clock::now();
-    flow_t max_flow{mf_algorithm(graph)};
+    T max_flow{mf_algorithm(graph)};
     end = std::chrono::steady_clock::now();
 
     std::chrono::microseconds::rep elapsed_time{std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()};
     return std::pair{elapsed_time, max_flow};
 }
 
-template <typename flow_t>
-void printResult(flow_t result_max_flow, auto result_time, std::string_view algorithm_used, int num_of_runs) {
+template <typename T>
+void printResult(T result_max_flow, auto result_time, std::string_view algorithm_used, int num_of_runs) {
     std::cout << "\n--------------------------------------------------------\n\n";
     std::cout << algorithm_used << ":\n";
     std::string edges_visited{};

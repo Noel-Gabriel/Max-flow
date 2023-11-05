@@ -12,17 +12,17 @@ namespace algorithms {
      * @brief Bfs used by ford-fulkerson.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network. 
      * @param augmenting_path Container to save the path from s to t if one is found.
      * @return The maximum flow that can be pushed on the path found.
      */
-    template <typename flow_t>
-    flow_t ff_bfs(const ds::Graph<flow_t>& graph, auto& augmenting_path) {
+    template <typename T>
+    T ff_bfs(const ds::Graph<T>& graph, auto& augmenting_path) {
         // queue for the bfs containing (vertex, flow pushed so far) pairs
-        std::queue<std::pair<int, flow_t>> to_visit{};
+        std::queue<std::pair<int, T>> to_visit{};
         // "infinite" flow to start the bfs
-        to_visit.emplace(graph.m_s, std::numeric_limits<flow_t>::max());
+        to_visit.emplace(graph.m_s, std::numeric_limits<T>::max());
 
         while(!to_visit.empty()) {
             auto current_vertex{to_visit.front()}; // (vertex, flow) pair
@@ -35,7 +35,7 @@ namespace algorithms {
                     continue;
                 }
                 // maximum possible flow that can be pushed through this edge
-                flow_t new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
+                T new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
                 // remember current edge
                 augmenting_path[edge->head] = edge;
                 if(edge->head == graph.m_t) {
@@ -53,12 +53,12 @@ namespace algorithms {
      *        the ford-fulkerson method and a breath-first search 
      *        to find augmenting paths.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
-     * @return flow_t The value of a maximum flow.
+     * @return T The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t edmonds_karp(ds::Graph<flow_t>& graph) {
+    template <typename T>
+    T edmonds_karp(ds::Graph<T>& graph) {
         return _ford_fulkerson(graph, &ff_bfs);
     }
 

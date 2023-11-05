@@ -7,6 +7,7 @@
 #include "algorithms/hipushrelabel.h"
 #include "algorithms/counter.h"
 
+#include "io/ak.h"
 #include "io/graphreader.h"
 #include "io/benchmark.h"
 
@@ -17,7 +18,8 @@
 
 
 int main() {
-    ds::Graph<int> g = io::load_graph_from_file("/Users/noel/Desktop/Max flow vscode/Max-flow/Max flow/test.dimacs");
+    generate_hard_problem("test graphs/aktest.dimacs", 1000);
+    ds::Graph<int> g = io::load_graph_from_file("test graphs/aktest.dimacs");
     start<int>(g);
     return 0;
 }

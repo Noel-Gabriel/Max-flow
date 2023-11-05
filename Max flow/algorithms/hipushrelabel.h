@@ -12,12 +12,12 @@ namespace algorithms {
      * 
      *
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @return The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t hi_push_relabel(ds::Graph<flow_t>& graph);
+    template <typename T>
+    T hi_push_relabel(ds::Graph<T>& graph);
         
 }
 

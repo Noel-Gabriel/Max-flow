@@ -11,8 +11,8 @@
 namespace ds {
 
     // Edge constructor
-    template <typename flow_t>
-    Graph<flow_t>::Edge::Edge(int t, int h, flow_t c)
+    template <typename T>
+    Graph<T>::Edge::Edge(int t, int h, T c)
         : tail{t}
         , head{h}
         , capacity{c} 
@@ -24,16 +24,16 @@ namespace ds {
      *        and sink are initialized as 0 and n-1 respectively, while the lists
      *        of edges for each vertex is empty.
      */
-    template <typename flow_t>
-    Graph<flow_t>::Graph(int n) 
+    template <typename T>
+    Graph<T>::Graph(int n) 
         : m_adj_list(n)
         , m_n{n}
         , m_s{0}
         , m_t{n-1} {}
 
     // Destructor for edges
-    template <typename flow_t>
-    Graph<flow_t>::~Graph() {
+    template <typename T>
+    Graph<T>::~Graph() {
         for(int i{0}; i < m_adj_list.size(); ++i) {
             for(int j{0}; j < m_adj_list[i].size(); ++j) {
                 delete m_adj_list[i][j];
@@ -50,8 +50,8 @@ namespace ds {
      * @param v_out An Integer, the head of the edge.
      * @param capacity Total capacity of the edge.
      */
-    template <typename flow_t>
-    void Graph<flow_t>::add_edge(int v_in, int v_out, flow_t capacity) {
+    template <typename T>
+    void Graph<T>::add_edge(int v_in, int v_out, T capacity) {
         // no self loops
         if(v_in == v_out) { return; }
 
@@ -69,8 +69,8 @@ namespace ds {
     /**
      * @brief Restore each edge capacity.
      */
-    template <typename flow_t>
-    void Graph<flow_t>::restore() {
+    template <typename T>
+    void Graph<T>::restore() {
         for(int i{0}; i < m_adj_list.size(); ++i) {
             for(int j{0}; j < m_adj_list[i].size(); ++j) {
                 m_adj_list[i][j]->restore();
@@ -79,8 +79,8 @@ namespace ds {
     }
 
     // for debugging purposes
-    template <typename flow_t>
-    void Graph<flow_t>::printGraph() {
+    template <typename T>
+    void Graph<T>::printGraph() {
         std::cout << "Source: " << m_s << "\n";
         std::cout << "Sink: " << m_t << "\n";
         std::cout << "Edges: \n";

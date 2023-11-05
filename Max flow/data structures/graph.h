@@ -9,9 +9,9 @@ namespace ds {
     /**
      * @brief Class representing a residual network.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      */
-    template <typename flow_t>
+    template <typename T>
     class Graph {
 
         public:
@@ -24,14 +24,14 @@ namespace ds {
             struct Edge {
                 int tail{-1};
                 int head{-1};
-                flow_t capacity{-1};
+                T capacity{-1};
                 // reverse edge in the residual graph
                 Edge* reverse{nullptr};
                 // to restore the edge
-                flow_t back_up_capacity{-1};
+                T back_up_capacity{-1};
 
                 // Edge constructor
-                Edge(int t, int h, flow_t c);
+                Edge(int t, int h, T c);
 
                 void restore() {capacity = back_up_capacity;}
             };
@@ -76,7 +76,7 @@ namespace ds {
              * @param v_out An Integer, the head of the edge.
              * @param capacity Total capacity of the edge.
              */
-            void add_edge(int v_in, int v_out, flow_t capacity);
+            void add_edge(int v_in, int v_out, T capacity);
 
             /**
              * @brief Restore each edge capacity.

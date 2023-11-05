@@ -12,17 +12,17 @@ namespace algorithms {
     /**
      * @brief Initializes the active buckets.
      *        See https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
-     *        for the highest selection rule.
+     *        for the highest label selection rule.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @param excess The excess at each vertex (inf for s, 0 every other vertex).
      * @param active The buckets.
      * @param labels The labels for each vertex.
      * @return int The highest label when initializing the buckets.
      */
-    template <typename flow_t>
-    void initialize_buckets(ds::Graph<flow_t>& graph, std::vector<flow_t>& excess, 
+    template <typename T>
+    void initialize_buckets(ds::Graph<T>& graph, std::vector<T>& excess, 
             std::vector<std::queue<int>>& active, const std::vector<int>& labels) {
         for(auto* edge : graph.m_adj_list[graph.m_s]) {
             if(push(excess, edge)) {
@@ -40,12 +40,12 @@ namespace algorithms {
      * 
      *
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @return The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t hi_push_relabel(ds::Graph<flow_t>& graph) {
+    template <typename T>
+    T hi_push_relabel(ds::Graph<T>& graph) {
         // initialization
         auto& adj_list{graph.m_adj_list};
 
@@ -58,8 +58,8 @@ namespace algorithms {
         std::vector<int> current_edges(graph.m_n, 0);
 
         // initialize excess
-        std::vector<flow_t> excess(graph.m_n, 0);
-        excess[graph.m_s] = std::numeric_limits<flow_t>::max();
+        std::vector<T> excess(graph.m_n, 0);
+        excess[graph.m_s] = std::numeric_limits<T>::max();
 
         // active nodes are now stored into buckets indexed by their labels
         // process active nodes from highest to lowest label (all 0 at the start)

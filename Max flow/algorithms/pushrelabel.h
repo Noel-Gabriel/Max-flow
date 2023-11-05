@@ -10,12 +10,12 @@ namespace algorithms {
      *        Goldberg's and Tarjan's push-relabel algorithm.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @return The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t push_relabel(ds::Graph<flow_t>& graph);
+    template <typename T>
+    T push_relabel(ds::Graph<T>& graph);
         
 }
 

@@ -11,12 +11,12 @@ namespace algorithms {
      *        the ford-fulkerson method and a breath-first search 
      *        to find augmenting paths.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
-     * @return flow_t The value of a maximum flow.
+     * @return T The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t edmonds_karp(ds::Graph<flow_t>& graph);
+    template <typename T>
+    T edmonds_karp(ds::Graph<T>& graph);
 }
 
 #include "edmondskarp.ipp"

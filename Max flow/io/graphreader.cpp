@@ -34,8 +34,19 @@ namespace io {
         ds::Graph<int> g{std::stoi(n)};
         n_line >> n; // number of edges
         std::cout << n << " edges.\n";
-        // skip information about source and sink (always 0 and n-1)
+        // read source and sink
         getline(file, line);
+        std::stringstream s_line(line);
+        std::string s{};
+        s_line >> s; // skip "n"
+        s_line >> s;  // source
+        g.m_s = std::stoi(s)-1;
+        getline(file, line);
+        std::stringstream t_line(line);
+        std::string t{0};
+        t_line >> t; // skip "n"
+        t_line >> t; // sink
+        g.m_t = std::stoi(t)-1;
         getline(file, line);
         // read edges
         while(getline(file, line)) {

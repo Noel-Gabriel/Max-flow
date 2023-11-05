@@ -8,22 +8,20 @@
 #include <queue>
 #include <chrono>
 
-using namespace std::chrono;
-
 namespace algorithms {
 
     /**
      * @brief Performs the push operation in the push-relabel algorithm.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param excess The sum of ingoing flow for every vertex. (negative for outgoing flow).
      * @param edge The edge used for pushing.
      * @return returns true if the node we pushed to got active after the push.
      */
-    template <typename flow_t>
-    bool push(std::vector<flow_t>& excess, auto* edge) {
-        flow_t to_push = std::min(excess[edge->tail], edge->capacity);
+    template <typename T>
+    bool push(std::vector<T>& excess, auto* edge) {
+        T to_push = std::min(excess[edge->tail], edge->capacity);
         // update excess
         excess[edge->tail] -= to_push;
         excess[edge->head] += to_push;
@@ -40,13 +38,13 @@ namespace algorithms {
      *        Sends as much flow es possible from every outgoing edge of the source.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @param excess The sum of ingoing flow for every vertex. (negative for outgoing flow)
      * @param active Queue of active vertices.
      */
-    template <typename flow_t>
-    void initialize_preflow(ds::Graph<flow_t>& graph, std::vector<flow_t>& excess, std::queue<int>& active) {
+    template <typename T>
+    void initialize_preflow(ds::Graph<T>& graph, std::vector<T>& excess, std::queue<int>& active) {
         for(auto* edge : graph.m_adj_list[graph.m_s]) {
             // saturate each outgoing edge from s
             if(push(excess, edge)) {
@@ -60,14 +58,14 @@ namespace algorithms {
      * 
      *        The new label is the minimal label of all adjacent vertices + 1
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @param vertex The vertex to relabel.
      * @param labels Current labeling.
      * @return The index of the edge used to find the minimal labeling (push operations can only start at this edge)
      */
-    template <typename flow_t>
-    int relabel(ds::Graph<flow_t>& graph, int vertex, std::vector<int>& labels) {
+    template <typename T>
+    int relabel(ds::Graph<T>& graph, int vertex, std::vector<int>& labels) {
         int min_label{INT_MAX};
         int edge_index{0};
         for(int i{0}; i < graph.m_adj_list[vertex].size(); ++i) {
@@ -88,12 +86,12 @@ namespace algorithms {
      *        Goldberg's and Tarjan's push-relabel algorithm.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @return The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t push_relabel(ds::Graph<flow_t>& graph) {
+    template <typename T>
+    T push_relabel(ds::Graph<T>& graph) {
         // initialization
         auto& adj_list{graph.m_adj_list};
 
@@ -107,9 +105,9 @@ namespace algorithms {
         std::vector<int> current_edges(graph.m_n, 0);
 
         // excess flow of each vertex
-        std::vector<flow_t> excess(graph.m_n, 0);
+        std::vector<T> excess(graph.m_n, 0);
         // "inifinite" excess at the source
-        excess[graph.m_s] = std::numeric_limits<flow_t>::max();
+        excess[graph.m_s] = std::numeric_limits<T>::max();
 
         // queue of active vertices
         std::queue<int> active{};

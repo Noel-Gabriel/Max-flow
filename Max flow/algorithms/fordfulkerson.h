@@ -10,12 +10,12 @@ namespace algorithms {
      *        the ford-fulkerson method and a depth-first search 
      *        to find augmenting paths.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
-     * @return flow_t The value of a maximum flow.
+     * @return T The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t ford_fulkerson(ds::Graph<flow_t>& graph);
+    template <typename T>
+    T ford_fulkerson(ds::Graph<T>& graph);
 
 }
 

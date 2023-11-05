@@ -12,17 +12,17 @@ namespace algorithms {
      * @brief Dfs used by ford-fulkerson.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network. 
      * @param augmenting_path Container to save the path from s to t if one is found.
      * @return The maximum flow that can be pushed on the path found.
      */
-    template <typename flow_t>
-    flow_t ff_dfs(const ds::Graph<flow_t>& graph, auto& augmenting_path) {
+    template <typename T>
+    T ff_dfs(const ds::Graph<T>& graph, auto& augmenting_path) {
         // stack for the dfs containing (vertex, flow pushed so far) pairs
-        std::stack<std::pair<int, flow_t>> to_visit{};
+        std::stack<std::pair<int, T>> to_visit{};
         // "infinite" flow from s to start the dfs
-        to_visit.emplace(graph.m_s, std::numeric_limits<flow_t>::max());
+        to_visit.emplace(graph.m_s, std::numeric_limits<T>::max());
 
         while(!to_visit.empty()) {
             auto current_vertex{to_visit.top()}; // (vertex, flow) pair
@@ -35,7 +35,7 @@ namespace algorithms {
                     continue;
                 }
                 // maximum possible flow that can be pushed through this edge
-                flow_t new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
+                T new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
                 // remember the current edge
                 augmenting_path[edge->head] = edge;
                 if(edge->head == graph.m_t) {
@@ -53,21 +53,21 @@ namespace algorithms {
      *        a dfs, and by edmonds-karp with a bfs.
      * 
      *
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
      * @param search The search function to be used to find augmenting paths.
      * @return The value of a maximum flow.
      */
-    template <typename flow_t>
-    flow_t _ford_fulkerson(ds::Graph<flow_t>& graph, 
-            flow_t (* search) (const ds::Graph<flow_t>& graph, 
-                std::vector<typename ds::Graph<flow_t>::Edge*>& augmenting_path)) {
+    template <typename T>
+    T _ford_fulkerson(ds::Graph<T>& graph, 
+            T (* search) (const ds::Graph<T>& graph, 
+                std::vector<typename ds::Graph<T>::Edge*>& augmenting_path)) {
         // to save the augmenting path found by the given search function
-        std::vector<typename ds::Graph<flow_t>::Edge*> augmenting_path(graph.m_n, nullptr);
+        std::vector<typename ds::Graph<T>::Edge*> augmenting_path(graph.m_n, nullptr);
         // current total flow pushed
-        flow_t max_flow{0};
+        T max_flow{0};
         // flow pushed by the next augmenting path
-        flow_t flow_pushed{0};
+        T flow_pushed{0};
         // find augmenting path using the given search function
         while((flow_pushed = search(graph, augmenting_path))) {
             int v{graph.m_t};
@@ -91,13 +91,13 @@ namespace algorithms {
      *        the ford-fulkerson method and a depth-first search 
      *        to find augmenting paths.
      * 
-     * @tparam flow_t Flow type.
+     * @tparam T Flow type.
      * @param graph The residual network.
-     * @return flow_t The value of a maximum flow.
+     * @return T The value of a maximum flow.
      */
-    template <typename flow_t> 
-    flow_t ford_fulkerson(ds::Graph<flow_t>& graph) {
-        return _ford_fulkerson<flow_t>(graph, &ff_dfs);
+    template <typename T> 
+    T ford_fulkerson(ds::Graph<T>& graph) {
+        return _ford_fulkerson<T>(graph, &ff_dfs);
     }
 }
 
