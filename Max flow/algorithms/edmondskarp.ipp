@@ -19,7 +19,7 @@ namespace algorithms {
      */
     template <typename T>
     T ff_bfs(const ds::Graph<T>& graph, auto& augmenting_path) {
-        // queue for the bfs containing (vertex, flow pushed so far) pairs
+        // queue containing (vertex, flow pushed so far) pairs
         std::queue<std::pair<int, T>> to_visit{};
         // "infinite" flow to start the bfs
         to_visit.emplace(graph.m_s, std::numeric_limits<T>::max());
@@ -30,11 +30,9 @@ namespace algorithms {
             for(auto* edge : graph.m_adj_list[current_vertex.first]) {
                 // counter for comparison, irrelevant to the search
                 ++C::ek_edges_visited;
-                // next vertex has already been visited or this edge is saturated
                 if(augmenting_path[edge->head] || edge->capacity <= 0) {
                     continue;
                 }
-                // maximum possible flow that can be pushed through this edge
                 T new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
                 // remember current edge
                 augmenting_path[edge->head] = edge;

@@ -19,7 +19,7 @@ namespace algorithms {
      */
     template <typename T>
     T ff_dfs(const ds::Graph<T>& graph, auto& augmenting_path) {
-        // stack for the dfs containing (vertex, flow pushed so far) pairs
+        // stack containing (vertex, flow pushed so far) pairs
         std::stack<std::pair<int, T>> to_visit{};
         // "infinite" flow from s to start the dfs
         to_visit.emplace(graph.m_s, std::numeric_limits<T>::max());
@@ -30,11 +30,9 @@ namespace algorithms {
             for(auto* edge : graph.m_adj_list[current_vertex.first]) {
                 // counter for comparison, irrelevant to the search
                 ++C::ff_edges_visited;
-                // next vertex has already been visited or this edge is saturated
                 if(augmenting_path[edge->head] || edge->capacity <= 0) {
                     continue;
                 }
-                // maximum possible flow that can be pushed through this edge
                 T new_flow_pushed{std::min(current_vertex.second, edge->capacity)};
                 // remember the current edge
                 augmenting_path[edge->head] = edge;
@@ -62,9 +60,8 @@ namespace algorithms {
     T _ford_fulkerson(ds::Graph<T>& graph, 
             T (* search) (const ds::Graph<T>& graph, 
                 std::vector<typename ds::Graph<T>::Edge*>& augmenting_path)) {
-        // to save the augmenting path found by the given search function
+        // to store the augmenting path
         std::vector<typename ds::Graph<T>::Edge*> augmenting_path(graph.m_n, nullptr);
-        // current total flow pushed
         T max_flow{0};
         // flow pushed by the next augmenting path
         T flow_pushed{0};
@@ -78,7 +75,6 @@ namespace algorithms {
                 edge->reverse->capacity += flow_pushed;
                 v = edge->tail;
             }
-            // increase total flow using the augmenting path found
             max_flow += flow_pushed;
             // clear current augmenting path for the next one
             std::fill(augmenting_path.begin(), augmenting_path.end(), nullptr);

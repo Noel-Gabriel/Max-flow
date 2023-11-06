@@ -5,8 +5,6 @@
 
 #include <string_view>
 
-struct PushRelabel;
-
 namespace io {
     /**
      * @brief Reads a graph in dimacs format.

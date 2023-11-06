@@ -5,7 +5,6 @@
 
 #include <chrono>
 
-
 /**
  * @brief Starts each algorithm on the given network and measures the elapsed time of
           execution of each algorithm.

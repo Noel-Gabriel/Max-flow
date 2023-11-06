@@ -20,7 +20,6 @@ namespace algorithms {
     template <typename T>
     std::vector<int> build_level_graph(const ds::Graph<T>& graph) {
         std::vector<int> level(graph.m_n, -1);
-        // source set to level 0
         level[graph.m_s] = 0;
         std::queue<int> to_visit{};
         to_visit.push(graph.m_s);
@@ -30,7 +29,6 @@ namespace algorithms {
             for(auto* edge : graph.m_adj_list[vertex]) {
                 // counter for comparison, irrelevant to dinic's
                 ++C::dinic_edges_visited;
-                // edge can't push any more flow or next vertex has been visited already
                 if(edge->capacity <= 0 || level[edge->head] != -1) {
                     continue;
                 }
@@ -56,26 +54,21 @@ namespace algorithms {
      */
     template <typename T>
     T dinic_dfs(auto& graph, int vertex, T flow_pushed, std::vector<int>& level, std::vector<int>& edges_to_visit) {
-        // reached the sink
         if(graph.m_t == vertex) { 
             return flow_pushed; 
         }
-        // iterate over edges that have not been already visited/blocked
         for(int& i{edges_to_visit[vertex]}; i < graph.m_adj_list[vertex].size(); ++i) {
             // counter for comparison, irrelevant to dinic's
             ++C::dinic_edges_visited;
             auto* edge{graph.m_adj_list[vertex][i]};
-            // edge not part of a shortest path to t or is already saturated
             if(level[edge->head] - 1 != level[vertex] || edge->capacity <= 0) {
                 continue;
             }
-            // possible flow that can be pushed using this edge on the path to t
             T push{dinic_dfs(graph, edge->head, std::min(flow_pushed, edge->capacity), level, edges_to_visit)};
             // no s-t path using this edge
             if(push == 0) {
                 continue;
             }
-            // else push through this edge
             edge->capacity -= push;
             // update reverse edge denoting total flow pushed through this edge
             edge->reverse->capacity += push;
@@ -95,23 +88,18 @@ namespace algorithms {
      */
     template <typename T>
     T dinic(ds::Graph<T>& graph) {
-        // value of total flow pushed.
         T max_flow{0};
         // flow pushed at each dfs
         T flow_pushed{0};
-        // stores the level or rank of each vertex
         std::vector<int> level = build_level_graph(graph);
         // stores the next edge that can be considered during the next dfs on the current level graph
-        // avoids checking of edges that are known to be on a current blocking path to t
         std::vector<int> edges_to_visit(graph.m_n, 0);
-        // while s-t path exists
         while(level[graph.m_t] != -1) {
             // push until a blocking flow is found
             while((flow_pushed = dinic_dfs<T>(graph, graph.m_s, std::numeric_limits<T>::max(), level, edges_to_visit))) {
-                // sum over all bottlenecks (min capacity edges) for all paths found
                 max_flow += flow_pushed;
             }
-            // build new level graph and consider all edges again
+            // next level graph, considering all edges in the dfs again
             level = build_level_graph(graph);
             std::fill(edges_to_visit.begin(), edges_to_visit.end(), 0);
         }

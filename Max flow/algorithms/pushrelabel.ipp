@@ -104,9 +104,8 @@ namespace algorithms {
         //https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm
         std::vector<int> current_edges(graph.m_n, 0);
 
-        // excess flow of each vertex
+        // excess function
         std::vector<T> excess(graph.m_n, 0);
-        // "inifinite" excess at the source
         excess[graph.m_s] = std::numeric_limits<T>::max();
 
         // queue of active vertices
@@ -121,25 +120,21 @@ namespace algorithms {
             if(vertex == graph.m_s || vertex == graph.m_t) { continue; }
             // discharge operation defined on wikipedia
             while(excess[vertex] > 0) {
-                // node still active, but no push operation possible -> relabel node and try again
+                // node still active, but reached end of edges -> relabel
                 if(current_edges[vertex] == adj_list[vertex].size()) {
                     current_edges[vertex] = relabel(graph, vertex, labels);
                 } else {
                     auto* edge{adj_list[vertex][current_edges[vertex]]};
-                    // push if edge not saturated and adjacent vertex at lower label (height)
                     if(edge->capacity > 0 && labels[vertex] == labels[edge->head]+1) {
-                        // add adjacent vertex to active nodes if it was a first push to this vertex
                         if(push(excess, edge)) {
                             active.push(edge->head);
                         }
                     } else {
-                        // no push possible
                         ++current_edges[vertex];
                     }
                 }
             }
         }
-        // excess at the sink at the end = value of a max flow
         return excess[graph.m_t];
     }
 }
