@@ -89,7 +89,6 @@ namespace algorithms {
     template <typename T>
     T dinic(ds::Graph<T>& graph) {
         T max_flow{0};
-        // flow pushed at each dfs
         T flow_pushed{0};
         std::vector<int> level = build_level_graph(graph);
         // stores the next edge that can be considered during the next dfs on the current level graph
