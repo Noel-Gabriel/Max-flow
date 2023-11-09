@@ -79,12 +79,17 @@ namespace ds {
             void add_edge(int v_in, int v_out, T capacity);
 
             /**
+             * @brief Shuffles the adjacency list.
+             */
+            void shuffle_edges();
+            
+            /**
              * @brief Restore each edge capacity.
              */
             void restore();
 
             // for debugging purposes
-            void printGraph();
+            void print_graph();
     };
 }
 

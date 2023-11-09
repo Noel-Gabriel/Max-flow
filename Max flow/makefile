@@ -1,30 +1,32 @@
-# generated using https://solver.assistedcoding.eu/makefilegen because I have no idea about makefiles
+# created with the help of chatgpt (never worked with makefiles before)
 
-OBJS	= main.o graphreader.o ak.o
-SOURCE	= main.cpp graphreader.cpp ak.cpp
-DEPENDS = $(patsubst %.cpp,%.d,$(SOURCE))
+SRC_DIR := src
+BUILD_DIR := build
+
+SOURCE	= $(wildcard $(SRC_DIR)/*.cpp)
+OBJS	= $(SOURCE:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 HEADER	= 
 OUT	= benchmarks
 CXX	 = g++
-FLAGS	 = -g -c -Wall -std=c++20 -MMD -MP -I/Users/noel/anaconda3/include/python3.11 
-LFLAGS	 =
+CXXFLAGS = -g -c -Wall -std=c++20 -MMD -MP 
+LFLAGS	 = 
 
-all: $(OBJS)
-	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS)
+.PHONY: all
+all: $(OUT)
 
-main.o: main.cpp
-	$(CXX) $(FLAGS) main.cpp 
+$(OUT): $(OBJS)
+	$(CXX) -g $(OBJS) -o $@ $(LFLAGS)
 
-graphreader.o: io/graphreader.cpp
-	$(CXX) $(FLAGS) io/graphreader.cpp 
+# C++
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp	
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-ak.o: io/ak.cpp
-	$(CXX) $(FLAGS) io/ak.cpp
-
+.PHONY: clean
 clean:
-	rm -f $(OBJS) $(OUT) $(DEPENDS)
+	rm -r $(BUILD_DIR) $(OUT)
 
--include $(DEPENDS)
+-include $(OBJS:.o=.d)
 
 run: $(OUT)
 	./$(OUT)

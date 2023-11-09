@@ -3,7 +3,28 @@
 
 #include "../data structures/graph.h"
 
+#include "../algorithms/counter.h"
+#include "../algorithms/fordfulkerson.h"
+#include "../algorithms/edmondskarp.h"
+#include "../algorithms/dinic.h"
+#include "../algorithms/pushrelabel.h"
+#include "../algorithms/hipushrelabel.h"
+
+
+#include <map>
 #include <chrono>
+
+// ***** NEED TO CLEAN THIS UP A BIT ******
+
+void resetCounters() {
+    counters::ff_edges_visited = 0;
+    counters::ek_edges_visited = 0;
+    counters::dinic_edges_visited = 0;
+    counters::hi_pr_pushes = 0;
+    counters::hi_pr_relabels = 0;
+    counters::pr_pushes = 0;
+    counters::pr_relabels = 0;
+}
 
 /**
  * @brief Starts each algorithm on the given network and measures the elapsed time of
@@ -24,7 +45,7 @@ void start(ds::Graph<T>& graph, int num_of_runs) {
        {"EDMONDS-KARP"                      , &algorithms::edmonds_karp},
        {"DINIC'S"                           , &algorithms::dinic},
        {"PUSH-RELABEL"                      , &algorithms::push_relabel},
-       {"HIGHEST LABEL PUSH RELABEL + GAP"  , &algorithms::hi_push_relabel}
+       {"HIGHEST LABEL PUSH-RELABEL + GAP"  , &algorithms::hi_push_relabel}
     };
 
     std::chrono::microseconds::rep elapsed_time{};
@@ -40,6 +61,7 @@ void start(ds::Graph<T>& graph, int num_of_runs) {
             max_flow = result.second;
         }
         printResult(max_flow, elapsed_time, algorithm.first, num_of_runs);
+        resetCounters();
         elapsed_time = 0;
         max_flow = 0;
     }
@@ -68,14 +90,28 @@ auto benchmark(ds::Graph<T>& graph, T (* mf_algorithm) (ds::Graph<T>& graph)) {
 
 template <typename T>
 void printResult(T result_max_flow, auto result_time, std::string_view algorithm_used, int num_of_runs) {
+    using namespace counters;
     std::cout << "\n--------------------------------------------------------\n\n";
     std::cout << algorithm_used << ":\n";
     std::string edges_visited{};
-    if(algorithm_used == "FORD-FULKERSON DFS") {edges_visited = std::to_string(C::ff_edges_visited);}
-    else if(algorithm_used == "EDMONDS-KARP") {edges_visited = std::to_string(C::ek_edges_visited);}
-    else if(algorithm_used == "DINIC'S") {edges_visited = std::to_string(C::dinic_edges_visited);}
+    std::string pushes{};
+    std::string relabels{};
+    if(algorithm_used == "FORD-FULKERSON DFS") {edges_visited = std::to_string(ff_edges_visited*1.0/num_of_runs);}
+    else if(algorithm_used == "EDMONDS-KARP") {edges_visited = std::to_string(ek_edges_visited*1.0/num_of_runs);}
+    else if(algorithm_used == "DINIC'S") {edges_visited = std::to_string(dinic_edges_visited*1.0/num_of_runs);}
+    else if(algorithm_used == "PUSH-RELABEL") {
+        pushes = std::to_string(pr_pushes*1.0/num_of_runs);
+        relabels = std::to_string(pr_relabels*1.0/num_of_runs);
+    } else if(algorithm_used == "HIGHEST LABEL PUSH-RELABEL + GAP") {
+        pushes = std::to_string(hi_pr_pushes*1.0/num_of_runs);
+        relabels = std::to_string(hi_pr_relabels*1.0/num_of_runs);
+    }
     if(edges_visited != "") {
-        std::cout << "Total number of edges checked during computation: " << edges_visited << "\n";
+        std::cout << "Total number of edges checked during computation: " << edges_visited << " (average over " << num_of_runs << " runs)\n";
+    }
+    if(pushes != "" || relabels != "") {
+        std::cout << "Total number of push operations: " << pushes << " (average over " << num_of_runs << " runs)\n";
+        std::cout << "Total number of relabel operations: " << relabels<< " (average over " << num_of_runs << " runs)\n";
     }
     std::cout << "Max flow: " << result_max_flow << " in an average of " << result_time*1.0/num_of_runs << 
         " ms over " << num_of_runs << " run" << ((num_of_runs > 1)?"s.\n" : ".\n");

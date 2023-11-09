@@ -3,6 +3,7 @@
 
 #include "../data structures/graph.h"
 #include "pushrelabel.h"
+#include "counter.h"
 
 #include <vector>
 #include <queue>
@@ -90,6 +91,7 @@ namespace algorithms {
                 // node still active, but reached end of edges -> relabel node, update gaps
                 if(current_edges[vertex] == adj_list[vertex].size()) {
                     current_edges[vertex] = relabel(graph, vertex, labels);
+                    ++counters::hi_pr_relabels;
                     //update gap heuristic
                     --gap[highest];
                     ++gap[labels[vertex]];
@@ -99,6 +101,7 @@ namespace algorithms {
                             if(highest < labels[i] && labels[i] < graph.m_n) {
                                 --gap[labels[i]];
                                 labels[i] = graph.m_n+1;
+                                ++counters::hi_pr_relabels;
                             }
                         }
                     }
@@ -108,6 +111,7 @@ namespace algorithms {
                     if(edge->capacity > 0 && labels[vertex] == labels[edge->head]+1) {
                         if(push(excess, edge)) {
                             active[labels[edge->head]].push(edge->head);
+                            ++counters::hi_pr_pushes;
                         }
                     } else {
                         ++current_edges[vertex];

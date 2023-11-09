@@ -29,7 +29,7 @@ namespace algorithms {
             to_visit.pop();
             for(auto* edge : graph.m_adj_list[current_vertex.first]) {
                 // counter for comparison, irrelevant to the search
-                ++C::ff_edges_visited;
+                ++counters::ff_edges_visited;
                 if(augmenting_path[edge->head] || edge->capacity <= 0) {
                     continue;
                 }

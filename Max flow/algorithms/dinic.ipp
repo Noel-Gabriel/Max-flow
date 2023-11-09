@@ -28,7 +28,7 @@ namespace algorithms {
             to_visit.pop();
             for(auto* edge : graph.m_adj_list[vertex]) {
                 // counter for comparison, irrelevant to dinic's
-                ++C::dinic_edges_visited;
+                ++counters::dinic_edges_visited;
                 if(edge->capacity <= 0 || level[edge->head] != -1) {
                     continue;
                 }
@@ -59,7 +59,7 @@ namespace algorithms {
         }
         for(int& i{edges_to_visit[vertex]}; i < graph.m_adj_list[vertex].size(); ++i) {
             // counter for comparison, irrelevant to dinic's
-            ++C::dinic_edges_visited;
+            ++counters::dinic_edges_visited;
             auto* edge{graph.m_adj_list[vertex][i]};
             if(level[edge->head] - 1 != level[vertex] || edge->capacity <= 0) {
                 continue;

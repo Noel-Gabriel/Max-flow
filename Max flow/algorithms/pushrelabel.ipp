@@ -2,6 +2,7 @@
 #define PUSH_RELABEL_IPP
 
 #include "../data structures/graph.h"
+#include "counter.h"
 
 #include <iostream>
 #include <vector>
@@ -123,11 +124,13 @@ namespace algorithms {
                 // node still active, but reached end of edges -> relabel
                 if(current_edges[vertex] == adj_list[vertex].size()) {
                     current_edges[vertex] = relabel(graph, vertex, labels);
+                    ++counters::pr_relabels;
                 } else {
                     auto* edge{adj_list[vertex][current_edges[vertex]]};
                     if(edge->capacity > 0 && labels[vertex] == labels[edge->head]+1) {
                         if(push(excess, edge)) {
                             active.push(edge->head);
+                            ++counters::pr_pushes;
                         }
                     } else {
                         ++current_edges[vertex];
