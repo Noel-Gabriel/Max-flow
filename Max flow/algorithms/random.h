@@ -17,6 +17,13 @@ namespace algorithms {
                 Random();
                 Random(unsigned int seed);
 
+                /**
+                 * @brief Generate a random number in [l, h].
+                 * 
+                 * @param l Lower bound.
+                 * @param h Upper bound.
+                 * @return int The random number generated.
+                 */
                 int random_num_in_range(int l, int h);
                 unsigned int get_seed() { return m_seed; };
 
