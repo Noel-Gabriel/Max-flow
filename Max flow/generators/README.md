@@ -6,4 +6,3 @@ Original files to the genrmf generator, implemented by Tamas Badics:
 
 genrmf first introduced in: "A computational comparison of the Dinic and Network Simplex methods for maximum flow" by Donald Goldfarb & Michael D. Grigoriadis.
     https://link.springer.com/article/10.1007/BF02288321
-
